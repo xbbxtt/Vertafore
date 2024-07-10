@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { FlatList, Image, RefreshControl, Text, View } from "react-native";
+import { FlatList, RefreshControl, Text, View } from "react-native";
 
-import { images } from "../../constants";
 import useAppwrite from "../../lib/useAppwrite";
-import { getAllPosts, getLatestPosts } from "../../lib/appwrite";
+import { getAllRecords } from "../../lib/appwrite";
 import { EmptyState } from "../../components";
 
 const Home = () => {
-  const { data: posts, refetch } = useAppwrite(getAllPosts);
-  const { data: latestPosts } = useAppwrite(getLatestPosts);
+  const { data: posts, refetch } = useAppwrite(getAllRecords);
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -18,26 +16,18 @@ const Home = () => {
     await refetch();
     setRefreshing(false);
   };
-
-  // one flatlist
-  // with list header
-  // and horizontal flatlist
-
-  //  we cannot do that with just scrollview as there's both horizontal and vertical scroll (two flat lists, within trending)
-
   return (
     <SafeAreaView className="bg-primary h-full">
       <FlatList
         data={posts}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
-          <VideoCard
-            title={item.title}
-            thumbnail={item.thumbnail}
-            video={item.video}
-            creator={item.creator.username}
-            avatar={item.creator.avatar}
-          />
+            <View className="flex justify-center flex-1 ml-5 gap-y-1">
+                <Text className="font-psemibold text-lg text-white"
+              numberOfLines={1} >
+                {item.user} {"  "} {item.email} {"  "} {item.description}
+                </Text>
+            </View>
         )}
         ListHeaderComponent={() => (
           <View className="flex my-6 px-4 space-y-6">
