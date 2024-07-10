@@ -1,13 +1,11 @@
 import { useState } from "react";
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
-
-import { images } from "../../constants";
-import { createUser } from "../../lib/appwrite";
+import { View, Text, ScrollView, Dimensions, Alert } from "react-native";
+import { createRecord } from "../../lib/appwrite";
 import { CustomButton, FormField } from "../../components";
 
-const SignUp = () => {
+const Create = () => {
 
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
@@ -23,12 +21,16 @@ const SignUp = () => {
 
     setSubmitting(true);
     try {
-      const result = await createUser(form.email, form.description, form.user);
-
+      await createRecord(form);
       router.replace("/home");
     } catch (error) {
       Alert.alert("Error", error.message);
     } finally {
+        setForm({
+            user: "",
+            email: "",
+            description: "",
+        });
       setSubmitting(false);
     }
   };
@@ -81,4 +83,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default Create;
